@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reCAPTCHA Popup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .captcha-popup {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .captcha-header {
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .captcha-title {
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recaptcha-logo {
+            width: 16px;
+            height: 16px;
+            background: #4285f4;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .captcha-content {
+            padding: 20px;
+        }
+
+        .captcha-instruction {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .captcha-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 80px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .captcha-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="noise" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="%23fff" opacity="0.1"/><rect x="2" y="2" width="1" height="1" fill="%23000" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23noise)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .captcha-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 6px;
+            position: relative;
+            z-index: 1;
+            transform: skew(-5deg);
+        }
+
+        .input-section {
+            margin-bottom: 16px;
+        }
+
+        .captcha-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .captcha-input:focus {
+            border-color: #4285f4;
+        }
+
+        .buttons-section {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-refresh {
+            background: white;
+            color: #666;
+        }
+
+        .btn-refresh:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-verify {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+
+        .btn-verify:hover {
+            background: #3367d6;
+        }
+
+        .btn-verify:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .refresh-icon {
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .status-message {
+            margin-top: 12px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .status-error {
+            background: #ffeaea;
+            color: #d93025;
+            border: 1px solid #fce8e6;
+        }
+
+        .status-success {
+            background: #e6f4ea;
+            color: #137333;
+            border: 1px solid #ceead6;
+        }
+    </style>
+</head>
+<body>
+    <div class="captcha-popup">
+        <div class="captcha-header">
+            <div class="captcha-title">
+                <div class="recaptcha-logo">r</div>
+                reCAPTCHA
+            </div>
+            <button class="close-btn" onclick="document.body.style.display='none'">×</button>
+        </div>
+        
+        <div class="captcha-content">
+            <div class="captcha-instruction">
+                Type the text you see in the image below
+            </div>
+            
+            <div class="captcha-image">
+                <div class="captcha-text" id="captcha-display">BX7K9</div>
+            </div>
+            
+            <div class="input-section">
+                <input 
+                    type="text" 
+                    class="captcha-input" 
+                    id="captcha-input"
+                    placeholder="Enter the text above"
+                    maxlength="5"
+                >
+            </div>
+            
+            <div class="buttons-section">
+                <button class="btn btn-refresh" onclick="refreshCaptcha()">
+                    <span class="refresh-icon">↻</span>Refresh
+                </button>
+                <button class="btn btn-verify" onclick="verifyCaptcha()">Verify</button>
+            </div>
+            
+            <div id="status-message"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentCaptcha = 'BX7K9';
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const numbers = '0123456789';
+        const allChars = letters + numbers;
+        
+        function generateRandomCaptcha() {
+            let captcha = '';
+            for (let i = 0; i < 5; i++) {
+                captcha += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+            return captcha;
+        }
+        
+        function refreshCaptcha() {
+            currentCaptcha = generateRandomCaptcha();
+            document.getElementById('captcha-display').textContent = currentCaptcha;
+            document.getElementById('captcha-input').value = '';
+            clearStatus();
+        }
+        
+        function scrambleInput() {
+            const input = document.getElementById('captcha-input');
+            let scrambled = '';
+            
+            for (let i = 0; i < input.value.length; i++) {
+                if (input.value[i] === ' ') {
+                    scrambled += ' ';
+                } else {
+                    // Replace each character with a random one
+                    scrambled += allChars[Math.floor(Math.random() * allChars.length)];
+                }
+            }
+            
+            input.value = scrambled;
+        }
+        
+        function verifyCaptcha() {
+            const userInput = document.getElementById('captcha-input').value.toUpperCase();
+            const statusDiv = document.getElementById('status-message');
+            
+            if (userInput === currentCaptcha) {
+                statusDiv.className = 'status-message status-success';
+                statusDiv.textContent = '✓ Verification successful!';
+                
+                // Simulate success and close after delay
+                setTimeout(() => {
+                    alert('CAPTCHA verified successfully!');
+                    document.body.style.display = 'none';
+                }, 1000);
+            } else {
+                statusDiv.className = 'status-message status-error';
+                statusDiv.textContent = '✗ Incorrect. Please try again.';
+                
+                // Auto-refresh after error
+                setTimeout(() => {
+                    refreshCaptcha();
+                }, 2000);
+            }
+        }
+        
+        function clearStatus() {
+            document.getElementById('status-message').textContent = '';
+            document.getElementById('status-message').className = '';
+        }
+        
+        // Add event listener for input scrambling
+        document.getElementById('captcha-input').addEventListener('input', function(e) {
+            // Small delay to allow the character to appear briefly before scrambling
+            setTimeout(scrambleInput, 100);
+        });
+        
+        // Allow Enter key to verify
+        document.getElementById('captcha-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCaptcha();
+            }
+        });
+        
+        // Clear status when user starts typing again
+        document.getElementById('captcha-input').addEventListener('focus', clearStatus);
+    </script>
+</body>
+</html>
