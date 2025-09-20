@@ -14,8 +14,8 @@ checkbox.addEventListener('change', () => {
   if (clickCount >= 3) {
     spinner.classList.remove('hidden');
 
-    // Try to open popup
-    const popup = window.open('', '', 'width=300,height=200');
+    // Try to open the fancy CAPTCHA popup
+    const popup = window.open('popup.html', 'captchaPopup', 'width=420,height=600');
     if (!popup) {
       alert("Popup failed. Verification failed.");
       spinner.classList.add('hidden');
@@ -23,10 +23,14 @@ checkbox.addEventListener('change', () => {
       return;
     }
 
-    popup.document.write('<p>Verifying...</p>');
-    setTimeout(() => {
-      popup.document.write('<p>Verified! You may close this window.</p>');
-      spinner.classList.add('hidden');
-    }, 2000);
+    // Optional: monitor popup closure
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed);
+        spinner.classList.add('hidden');
+        alert("Popup closed. Verification incomplete.");
+        clickCount = 0;
+      }
+    }, 1000);
   }
 });
