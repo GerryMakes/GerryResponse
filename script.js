@@ -2,6 +2,16 @@ const checkbox = document.getElementById('human-check');
 const spinner = document.getElementById('spinner');
 let clickCount = 0;
 
+const spinner = document.querySelector('.spinner');
+
+// Start spinning immediately (optional if already styled)
+spinner.style.animation = 'spinn 1s linear infinite';
+
+// Stop after 25 seconds
+setTimeout(() => {
+  spinner.style.animation = 'none';
+}, 25000);
+
 checkbox.addEventListener('change', () => {
   clickCount++;
 
