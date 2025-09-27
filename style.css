@@ -1,54 +1,349 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  text-align: center;
-  padding-top: 50px;
-}
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.captcha-box {
-  width: 300px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
 
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
+        .loading-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
 
-.spinner {
-  margin-top: 10px;
-  width: 20px;
-  height: 20px;
-  border: 3px solid #ccc;
-  border-top: 3px solid #333;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+        .security-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: #4285f4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            animation: pulse 2s infinite;
+        }
 
-.hidden {
-  display: none;
-}
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
 
-#loadingOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Ensure it's on top of other content */
-}
+        .main-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .progress-section {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .status-list {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 15px;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .status-item.active {
+            opacity: 1;
+            color: #4285f4;
+        }
+
+        .status-item.complete {
+            opacity: 1;
+            color: #34a853;
+        }
+
+        .status-item.failed {
+            opacity: 1;
+            color: #ea4335;
+        }
+
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-item .status-icon {
+            background: #e0e0e0;
+            color: #999;
+        }
+
+        .status-item.active .status-icon {
+            background: #4285f4;
+            color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .status-item.complete .status-icon {
+            background: #34a853;
+            color: white;
+        }
+
+        .status-item.failed .status-icon {
+            background: #ea4335;
+            color: white;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ffeaea;
+            border: 1px solid #fce8e6;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            color: #d93025;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .retry-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .retry-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .captcha-notice {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            color: #1565c0;
+            font-size: 14px;
+            display: none;
+        }
+
+        .captcha-notice.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .btn {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #3367d6;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Captcha Popup Styles */
+        .captcha-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .captcha-popup {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            overflow: hidden;
+        }
+
+        .captcha-header {
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .captcha-title {
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recaptcha-logo {
+            width: 16px;
+            height: 16px;
+            background: #4285f4;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .captcha-content {
+            padding: 20px;
+        }
+
+        .captcha-instruction {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .captcha-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 80px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .captcha-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 6px;
+            position: relative;
+            z-index: 1;
+            transform: skew(-5deg);
+        }
+
+        .captcha-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .captcha-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-refresh {
+            background: white;
+            color: #666;
+            border: 1px solid #d0d0d0;
+        }
