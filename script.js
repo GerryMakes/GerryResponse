@@ -2,16 +2,6 @@ const checkbox = document.getElementById('human-check');
 const spinner = document.getElementById('spinner');
 let clickCount = 0;
 
-const spinner = document.querySelector('.spinner');
-
-// Start spinning immediately (optional if already styled)
-spinner.style.animation = 'spinn 1s linear infinite';
-
-// Stop after 25 seconds
-setTimeout(() => {
-  spinner.style.animation = 'none';
-}, 25000);
-
 checkbox.addEventListener('change', () => {
   clickCount++;
 
@@ -23,6 +13,12 @@ checkbox.addEventListener('change', () => {
   // Require 3 clicks to verify
   if (clickCount >= 3) {
     spinner.classList.remove('hidden');
+    spinner.style.animation = 'spinn 1s linear infinite';
+
+    // Stop spinning after 25 seconds
+    setTimeout(() => {
+      spinner.style.animation = 'none';
+    }, 25000);
 
     // Try to open the fancy CAPTCHA popup
     const popup = window.open('popup.html', 'captchaPopup', 'width=420,height=600');
