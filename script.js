@@ -13,12 +13,7 @@ checkbox.addEventListener('change', () => {
   // Require 3 clicks to verify
   if (clickCount >= 3) {
     spinner.classList.remove('hidden');
-    spinner.style.animation = 'spinn 1s linear infinite';
-
-    // Stop spinning after 25 seconds
-    setTimeout(() => {
-      spinner.style.animation = 'none';
-    }, 2500);
+    spinner.style.animation = 'spinn 1s linear infinite';    
 
     // Try to open the fancy CAPTCHA popup
     const popup = window.open('popup.html', 'captchaPopup', 'width=420,height=600');
