@@ -18,7 +18,7 @@ checkbox.addEventListener('change', () => {
     // Stop spinning after 25 seconds
     setTimeout(() => {
       spinner.style.animation = 'none';
-    }, 25000);
+    }, 2500);
 
     // Try to open the fancy CAPTCHA popup
     const popup = window.open('popup.html', 'captchaPopup', 'width=420,height=600');
